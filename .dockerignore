@@ -1,0 +1,33 @@
+# Git
+.git
+.github
+.gitignore
+
+# IDE
+.idea
+.vscode
+
+# Environment
+.env
+.env.*
+
+# Go tooling
+.golangci.yml
+/bin
+*.exe
+*.out
+*.test
+coverage.out
+*.coverprofile
+
+# Logs/temp
+*.log
+tmp/
+temp/
+
+# Local infrastructure
+nginx/
+
+# Project files
+README*
+Makefile
