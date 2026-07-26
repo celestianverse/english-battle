@@ -19,13 +19,20 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	err := run()
+	if err != nil {
+		slog.Error("failed", "err", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
 	logger := logging.New()
 	slog.SetDefault(logger)
 
 	cfg, err := config.Load()
 	if err != nil {
-		slog.Error("failed load config", "err", err)
-		os.Exit(1)
+		return err
 	}
 
 	mux := http.NewServeMux()
@@ -40,7 +47,10 @@ func main() {
 	}
 
 	slog.Info("starting server")
-	if err := server.ListenAndServe(); err != nil {
-		slog.Error("failed server", "err", err)
+	err = server.ListenAndServe()
+	if err != nil {
+		return err
 	}
+
+	return nil
 }

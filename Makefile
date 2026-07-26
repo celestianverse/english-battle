@@ -1,6 +1,9 @@
 -include .env
 
-.PHONY: run run-build stop psql up down
+.PHONY: tidy run run-build stop psql up down seed clear gen
+
+tidy:
+	go mod tidy
 
 run:
 	docker compose up -d
@@ -20,3 +23,11 @@ up:
 down:
 	goose down
 
+seed:
+	go run ./cmd/seed/main.go
+
+clear:
+	go run ./cmd/clear/main.go
+
+gen:
+	sqlc generate
