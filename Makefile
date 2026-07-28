@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: tidy run run-build stop psql up down seed clear gen
+.PHONY: tidy run build stop psql up down seed clear gen vite
 
 tidy:
 	go mod tidy
@@ -8,7 +8,7 @@ tidy:
 run:
 	docker compose up -d
 
-run-build:
+build:
 	docker compose up -d --build
 
 stop:
@@ -31,3 +31,6 @@ clear:
 
 gen:
 	sqlc generate
+
+vite:
+	cd web && npm run dev
