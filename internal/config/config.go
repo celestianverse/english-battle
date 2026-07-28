@@ -10,21 +10,24 @@ import (
 )
 
 type Config struct {
-	Port    int           `env:"PORT,required"`
-	Timeout time.Duration `env:"TIMEOUT,required"`
-	DSN     string        `env:"DSN,required"`
-	Root    string
+	Port            int           `env:"PORT,required"`
+	TimeoutRead     time.Duration `env:"TIMEOUT_READ,required"`
+	TimeoutWrite    time.Duration `env:"TIMEOUT_WRITE,required"`
+	TimeoutIdle     time.Duration `env:"TIMEOUT_IDLE,required"`
+	TimeoutShutdown time.Duration `env:"TIMEOUT_SHUTDOWN,required"`
+	DSN             string        `env:"DSN,required"`
+	DSNLocal        string        `env:"DSN_LOCAL,required"`
+	Root            string
 }
 
 func Load() (*Config, error) {
 	if err := godotenv.Load(); err != nil {
-		slog.Warn(".env file not found, using system environment")
+		slog.Info("using environment variables instead .env")
 	}
 
 	root, err := os.Getwd()
 	if err != nil {
-		slog.Error("failed getting root", "err", err)
-		os.Exit(1)
+		return nil, err
 	}
 
 	config := Config{

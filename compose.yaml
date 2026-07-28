@@ -9,6 +9,7 @@ services:
     env_file:
       - .env
     environment:
+      DSN: ${DSN}
       DB_HOST: postgres
       DB_PORT: ${POSTGRES_PORT}
       DB_NAME: ${POSTGRES_DB}

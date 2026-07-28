@@ -1,53 +1,52 @@
 package main
 
 import (
+	"context"
 	"english-battle/internal/config"
 	"english-battle/internal/logging"
-	"fmt"
+	"english-battle/internal/server"
+	"english-battle/internal/words"
 	"log/slog"
-	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
-type Handler struct{}
-
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	if _, err := w.Write([]byte("working server")); err != nil {
-		slog.Error("failed write response")
-	}
-	slog.Info("successful write response")
-}
-
 func main() {
-	err := run()
-	if err != nil {
-		slog.Error("failed", "err", err)
-		os.Exit(1)
-	}
-}
-
-func run() error {
 	logger := logging.New()
 	slog.SetDefault(logger)
+	slog.Info("started app")
 
 	cfg, err := config.Load()
 	if err != nil {
+		slog.Error("failed load config", "err", err)
+		os.Exit(1)
+	}
+	slog.Info("loaded config")
+
+	ctx, cancel := signal.NotifyContext(
+		context.Background(),
+		os.Interrupt,
+		syscall.SIGTERM,
+	)
+	defer cancel()
+
+	err = run(ctx, cfg)
+	if err != nil {
+		slog.Error("failed app run", "err", err)
+		os.Exit(1)
+	}
+	slog.Info("stopped app gracefully")
+}
+
+func run(ctx context.Context, cfg *config.Config) error {
+	words, err := words.Load(ctx, cfg)
+	if err != nil {
 		return err
 	}
+	slog.Info("loaded words", "count", len(words))
 
-	mux := http.NewServeMux()
-
-	mux.HandleFunc("/", homeHandler)
-
-	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.Port),
-		Handler:      mux,
-		ReadTimeout:  cfg.Timeout,
-		WriteTimeout: cfg.Timeout,
-	}
-
-	slog.Info("starting server")
-	err = server.ListenAndServe()
+	err = server.Start(ctx, cfg, words)
 	if err != nil {
 		return err
 	}
