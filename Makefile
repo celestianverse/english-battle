@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: tidy run build stop psql up down seed clear gen vite
+.PHONY: tidy run build stop psql logs up down seed clear gen vite install biome
 
 tidy:
 	go mod tidy
@@ -16,6 +16,9 @@ stop:
 
 psql:
 	docker compose exec postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
+
+logs:
+	docker compose logs app --tail=100
 
 up:
 	goose up
@@ -34,3 +37,9 @@ gen:
 
 vite:
 	cd web && npm run dev
+
+install:
+	cd web && npm install
+
+biome:
+	cd web && npm run check

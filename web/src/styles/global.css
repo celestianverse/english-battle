@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+    --font-montserrat: "Montserrat", system-ui, sans-serif;
+}
+
+@theme inline {
+    --font-title: var(--font-montserrat);
+    --font-sans: var(--font-montserrat);
+}
+
+@theme {
+    --color-light: rgba(255, 255, 255, 0.1);
+    --color-light-hover: rgba(255, 255, 255, 0.2);
+    --color-purple: #b500da;
+    --color-blue: #107bf5;
+    --color-green: #079762;
+    --color-red: #953131;
+
+    --tw-leading: 1.3;
+}
+
+@layer base {
+    html {
+        @apply min-h-screen;
+        font-size: 16px;
+    }
+
+    body {
+        @apply min-h-screen;
+        background:
+            fixed linear-gradient(254.47deg, #2917c9 0%, #8712a4 100%),
+            #ffffff;
+        font-family: var(--font-sans), system-ui, sans-serif;
+        font-weight: 500;
+        color: var(--color-white);
+    }
+
+    #root {
+        height: 100vh;
+        @apply text-base;
+    }
+
+    ::selection {
+        background: var(--color-purple);
+        color: var(--color-white);
+    }
+
+    a,
+    button,
+    label {
+        cursor: pointer;
+    }
+
+    a[disabled],
+    button[disabled],
+    input[disabled],
+    textarea[disabled] {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+}

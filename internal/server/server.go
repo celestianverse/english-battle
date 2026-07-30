@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"english-battle/internal/config"
 	"english-battle/internal/db"
+	"english-battle/internal/server/middleware"
 	"english-battle/internal/words"
 	"errors"
 	"fmt"
@@ -54,7 +55,7 @@ func Start(ctx context.Context, cfg *config.Config, words []db.Word) error {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", app.webHandler)
-	mux.HandleFunc("/api/words", app.wordsHandler)
+	mux.HandleFunc("/api/words", middleware.CORS(cfg, app.wordsHandler))
 
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.Port),

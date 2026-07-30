@@ -32,7 +32,7 @@ func run() error {
 	)
 	defer cancel()
 
-	conn, err := pgx.Connect(ctx, cfg.DSN)
+	conn, err := pgx.Connect(ctx, cfg.DSNLocal)
 	if err != nil {
 		return err
 	}

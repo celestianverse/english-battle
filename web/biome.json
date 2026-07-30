@@ -1,0 +1,75 @@
+{
+    "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "ignoreUnknown": false,
+        "includes": [
+            "**",
+            "!node_modules",
+            "!.vite",
+            "!dist",
+            "!build",
+            "!__tests__"
+        ]
+    },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineEnding": "lf",
+        "attributePosition": "multiline",
+        "bracketSameLine": false
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "preset": "recommended",
+            "suspicious": {
+                "noUnknownAtRules": "off",
+                "noDocumentCookie": "off"
+            },
+            "a11y": {
+                "useSemanticElements": "off",
+                "noStaticElementInteractions": "off",
+                "useKeyWithClickEvents": "off",
+                "noLabelWithoutControl": "off"
+            },
+            "complexity": {
+                "useOptionalChain": "off",
+                "noImportantStyles": "off"
+            },
+            "style": {
+                "noNonNullAssertion": "off"
+            },
+            "correctness": {
+                "noUnknownTypeSelector": "off"
+            }
+        },
+        "domains": {
+            "react": "recommended"
+        }
+    },
+    "assist": {
+        "enabled": true,
+        "actions": {
+            "source": {
+                "organizeImports": "on"
+            }
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "double",
+            "jsxQuoteStyle": "double"
+        }
+    },
+    "css": {
+        "parser": {
+            "tailwindDirectives": true
+        }
+    }
+}

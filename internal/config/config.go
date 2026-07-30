@@ -17,6 +17,7 @@ type Config struct {
 	TimeoutShutdown time.Duration `env:"TIMEOUT_SHUTDOWN,required"`
 	DSN             string        `env:"DSN,required"`
 	DSNLocal        string        `env:"DSN_LOCAL,required"`
+	WebLocalhost    string        `env:"WEB_LOCALHOST,required"`
 	Root            string
 }
 
