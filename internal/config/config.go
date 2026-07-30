@@ -10,14 +10,15 @@ import (
 )
 
 type Config struct {
-	Port            int           `env:"PORT,required"`
+	ServerPort      int           `env:"SERVER_PORT,required"`
 	TimeoutRead     time.Duration `env:"TIMEOUT_READ,required"`
 	TimeoutWrite    time.Duration `env:"TIMEOUT_WRITE,required"`
 	TimeoutIdle     time.Duration `env:"TIMEOUT_IDLE,required"`
 	TimeoutShutdown time.Duration `env:"TIMEOUT_SHUTDOWN,required"`
 	DSN             string        `env:"DSN,required"`
 	DSNLocal        string        `env:"DSN_LOCAL,required"`
-	WebLocalhost    string        `env:"WEB_LOCALHOST,required"`
+	ProdURL         string        `env:"PROD_URL,required"`
+	WebLocalhostURL string        `env:"WEB_LOCALHOST_URL,required"`
 	Root            string
 }
 

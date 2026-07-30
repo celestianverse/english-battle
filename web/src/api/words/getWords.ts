@@ -1,3 +1,4 @@
+import { API_URL } from "@/config/env";
 import type { Word } from "../../types/Word";
 
 export const getWords = async (): Promise<Word[]> => {
@@ -8,7 +9,7 @@ export const getWords = async (): Promise<Word[]> => {
     }, 5000);
 
     try {
-        const response = await fetch("http://localhost:8080/api/words", {
+        const response = await fetch(`${API_URL}/api/words`, {
             signal: controller.signal,
         });
 

@@ -4,8 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "${PORT}:${PORT}"
     env_file:
       - .env
     environment:
@@ -42,8 +40,27 @@ services:
     networks:
       - app_network
 
+  caddy:
+    image: caddy:2.11.4-alpine
+    env_file:
+      - .env
+    ports:
+      - "${PUBLIC_HTTP_PORT}:${PUBLIC_HTTP_PORT}"
+      - "${PUBLIC_HTTPS_PORT}:${PUBLIC_HTTPS_PORT}"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - app_network
+
 networks:
   app_network:
 
 volumes:
-  postgres_data: {}
+  postgres_data:
+  caddy_data:
+  caddy_config:

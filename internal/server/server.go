@@ -53,13 +53,14 @@ func Start(ctx context.Context, cfg *config.Config, words []db.Word) error {
 	}
 
 	mux := http.NewServeMux()
-
 	mux.HandleFunc("/", app.webHandler)
-	mux.HandleFunc("/api/words", middleware.CORS(cfg, app.wordsHandler))
+	mux.HandleFunc("/api/words", app.wordsHandler)
+
+	muxCORS := middleware.CORS(cfg, mux)
 
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.Port),
-		Handler:      mux,
+		Addr:         fmt.Sprintf(":%d", cfg.ServerPort),
+		Handler:      muxCORS,
 		ReadTimeout:  cfg.TimeoutRead,
 		WriteTimeout: cfg.TimeoutWrite,
 		IdleTimeout:  cfg.TimeoutIdle,
@@ -67,7 +68,7 @@ func Start(ctx context.Context, cfg *config.Config, words []db.Word) error {
 
 	serverErr := make(chan error, 1)
 	go func() {
-		slog.Info("starting server", "port", cfg.Port)
+		slog.Info("starting server", "port", cfg.ServerPort)
 		err := server.ListenAndServe()
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			serverErr <- err
