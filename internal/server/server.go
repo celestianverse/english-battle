@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -18,6 +19,11 @@ import (
 type app struct {
 	cfg   *config.Config
 	words []db.Word
+}
+
+func (a *app) healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte("OK"))
 }
 
 func (a *app) webHandler(w http.ResponseWriter, r *http.Request) {
@@ -54,6 +60,7 @@ func Start(ctx context.Context, cfg *config.Config, words []db.Word) error {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", app.webHandler)
+	mux.HandleFunc("/health", app.healthHandler)
 	mux.HandleFunc("/api/words", app.wordsHandler)
 
 	muxCORS := middleware.CORS(cfg, mux)
@@ -66,10 +73,16 @@ func Start(ctx context.Context, cfg *config.Config, words []db.Word) error {
 		IdleTimeout:  cfg.TimeoutIdle,
 	}
 
+	listener, err := net.Listen("tcp", server.Addr)
+	if err != nil {
+		return err
+	}
+	slog.Info("started listening server")
+
 	serverErr := make(chan error, 1)
+
 	go func() {
-		slog.Info("starting server", "port", cfg.ServerPort)
-		err := server.ListenAndServe()
+		err := server.Serve(listener)
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			serverErr <- err
 		}

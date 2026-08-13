@@ -1,4 +1,5 @@
 export const API_URL =
-    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-        ? "http://english-battle.development"
+    window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+        ? "http://battle.development"
         : "";
