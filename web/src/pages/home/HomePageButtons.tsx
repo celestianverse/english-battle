@@ -9,7 +9,7 @@ export const HomePageButtons = () => {
             <Button
                 href={ROUTES.celestian}
                 as="a"
-                color="cyan"
+                color="blue"
                 className="w-54"
             >
                 celestian.cc
