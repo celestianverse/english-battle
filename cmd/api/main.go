@@ -10,6 +10,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func main() {
@@ -26,7 +28,7 @@ func main() {
 
 	ctx, cancel := signal.NotifyContext(
 		context.Background(),
-		os.Interrupt,
+		syscall.SIGINT,
 		syscall.SIGTERM,
 	)
 	defer cancel()
@@ -40,13 +42,25 @@ func main() {
 }
 
 func run(ctx context.Context, cfg *config.Config) error {
-	words, err := words.Load(ctx, cfg)
+	pool, err := pgxpool.New(ctx, cfg.DSN)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+
+	err = pool.Ping(ctx)
+	if err != nil {
+		return err
+	}
+	slog.Info("connected to postgres")
+
+	words, err := words.Load(ctx, cfg, pool)
 	if err != nil {
 		return err
 	}
 	slog.Info("loaded words", "count", len(words))
 
-	err = server.Start(ctx, cfg, words)
+	err = server.Start(ctx, cfg, words, pool)
 	if err != nil {
 		return err
 	}

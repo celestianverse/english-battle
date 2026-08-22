@@ -4,8 +4,8 @@ import { Page } from "@/components/ui/Page/Page";
 import { useGame } from "@/hooks/useGame";
 import { GamePageAgain } from "./GamePageAgain";
 import { GamePageAnswer } from "./GamePageAnswer";
-import { GamePageButton } from "./GamePageButton";
 import { GamePageResult } from "./GamePageResult";
+import { GamePageWord } from "./GamePageWord";
 import { GamePageWords } from "./GamePageWords";
 import { GamePageWrapper } from "./GamePageWrapper";
 
@@ -35,7 +35,7 @@ export const GamePage = () => {
                     {isEnd && <GamePageResult result={result} />}
                     <GamePageWords>
                         {!isEnd && (
-                            <GamePageButton
+                            <GamePageWord
                                 words={words}
                                 isClicked={isClicked}
                                 isSuccess={isSuccess}

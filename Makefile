@@ -1,9 +1,12 @@
 -include .env
 
-.PHONY: tidy run build stop psql logs up down seed clear gen vite install biome
+.PHONY: tidy verify run build stop psql logs up down seed clear create-admin create-secret sqlc vite install biome
 
 tidy:
 	go mod tidy
+
+verify:
+	go mod verify
 
 run:
 	docker compose up -d
@@ -32,7 +35,13 @@ seed:
 clear:
 	go run ./cmd/clear/main.go
 
-gen:
+create-admin:
+	go run ./cmd/create-admin/main.go
+
+create-secret:
+	go run ./cmd/create-secret/main.go
+
+sqlc:
 	sqlc generate
 
 vite:

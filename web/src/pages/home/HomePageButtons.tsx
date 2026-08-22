@@ -5,7 +5,11 @@ import { ROUTES } from "@/config/routes";
 
 export const HomePageButtons = () => {
     return (
-        <Column smFlexDirection="row" gap={6} className="[&:hover~.home-image_.home-logo]:-translate-y-4 [&:hover~.home-image_.home-sword-left]:-rotate-12 [&:hover~.home-image_.home-sword-right]:rotate-12">
+        <Column
+            smFlexDirection="row"
+            gap={6}
+            className="[&:hover~.home-image_.home-logo]:-translate-y-4 [&:hover~.home-image_.home-sword-left]:-rotate-12 [&:hover~.home-image_.home-sword-right]:rotate-12"
+        >
             <Button
                 href={ROUTES.celestian}
                 as="a"

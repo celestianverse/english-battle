@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/csv"
 	"english-battle/internal/config"
-	"english-battle/internal/db"
+	"english-battle/internal/database"
 	"errors"
 	"fmt"
 	"io"
@@ -37,7 +37,7 @@ func run() (int, error) {
 
 	ctx, cancel := signal.NotifyContext(
 		context.Background(),
-		os.Interrupt,
+		syscall.SIGINT,
 		syscall.SIGTERM,
 	)
 	defer cancel()
@@ -54,7 +54,7 @@ func run() (int, error) {
 	}
 	defer tx.Rollback(ctx)
 
-	queries := db.New(tx)
+	queries := database.New(tx)
 
 	path := filepath.Join(cfg.Root, "data/words-a1.csv")
 	file, err := os.Open(path)
@@ -90,7 +90,7 @@ func run() (int, error) {
 
 		err = queries.CreateWord(
 			ctx,
-			db.CreateWordParams{
+			database.CreateWordParams{
 				English:    strings.TrimSpace(row[0]),
 				Russian:    strings.TrimSpace(row[1]),
 				Difficulty: strings.TrimSpace(row[2]),

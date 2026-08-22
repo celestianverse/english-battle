@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/Button/Button";
 import { Icon } from "@/components/ui/Icon/Icon";
-import type { GamePageButtonProps } from "./types";
+import type { GamePageWordProps } from "./types";
 
-export const GamePageButton = ({
+export const GamePageWord = ({
     words,
     isClicked,
     isSuccess,
     isFail,
     buttonHandler,
-}: GamePageButtonProps) => {
+}: GamePageWordProps) => {
     return words.map((word) => (
         <Button
             key={word.ID}

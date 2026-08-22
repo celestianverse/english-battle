@@ -3,20 +3,14 @@ package words
 import (
 	"context"
 	"english-battle/internal/config"
-	"english-battle/internal/db"
+	"english-battle/internal/database"
 	"math/rand/v2"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func Load(ctx context.Context, cfg *config.Config) ([]db.Word, error) {
-	conn, err := pgx.Connect(ctx, cfg.DSN)
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close(ctx)
-
-	queries := db.New(conn)
+func Load(ctx context.Context, cfg *config.Config, pool *pgxpool.Pool) ([]database.Word, error) {
+	queries := database.New(pool)
 
 	words, err := queries.GetWords(ctx)
 	if err != nil {
@@ -26,7 +20,7 @@ func Load(ctx context.Context, cfg *config.Config) ([]db.Word, error) {
 	return words, nil
 }
 
-func GetRandom25(words []db.Word) []db.Word {
+func GetRandom25(words []database.Word) []database.Word {
 	rand.Shuffle(len(words), func(i, j int) {
 		words[i], words[j] = words[j], words[i]
 	})

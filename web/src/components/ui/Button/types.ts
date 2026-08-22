@@ -42,6 +42,7 @@ export type ButtonOwnProps = {
     gradient?: boolean;
     shadow?: boolean;
     borderRadius?: Extract<BorderRadius, "lg" | "xl" | "2xl" | "full">;
+    fullwidth?: boolean;
     disabled?: boolean;
     className?: string;
     children?: ReactNode;

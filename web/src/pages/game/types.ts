@@ -15,7 +15,7 @@ export type GamePageResultProps = {
     result: () => string;
 };
 
-export type GamePageButtonProps = {
+export type GamePageWordProps = {
     words: Word[];
     isClicked: (id: number) => boolean;
     isSuccess: (id: number) => boolean;

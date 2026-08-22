@@ -8,6 +8,6 @@ sql:
       - "queries"
     gen:
       go:
-        package: "db"
-        out: "internal/db"
+        package: "database"
+        out: "internal/database"
         sql_package: "pgx/v5"

@@ -1,5 +1,4 @@
 import type { ElementType } from "react";
-import { BUTTON_DEFAULT_ELEMENT } from "@/components/ui/Button/constants.ts";
 import {
     BORDER_RADIUS,
     CONTENT_COLOR,
@@ -25,6 +24,7 @@ import {
     XXL_FLEX_GROW,
 } from "@/config/design-tokens.ts";
 import { cn } from "@/helpers/cn.ts";
+import { BUTTON_DEFAULT_ELEMENT } from "./constants.ts";
 import type { ButtonElement, ButtonProps } from "./types";
 
 export const Button = <
@@ -51,6 +51,7 @@ export const Button = <
     gradient,
     shadow,
     borderRadius = "xl",
+    fullwidth,
     disabled,
     className,
     children,
@@ -85,6 +86,7 @@ export const Button = <
                 xxlFlexGrow && XXL_FLEX_GROW[xxlFlexGrow],
                 JUSTIFY_CONTENT[justifyContent],
                 BORDER_RADIUS[borderRadius],
+                fullwidth && "w-full",
                 disabled && "disabled:pointer-events-none disabled:opacity-50",
                 TRANSITION,
                 square && "p-0!",

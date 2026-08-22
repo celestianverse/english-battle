@@ -2,72 +2,38 @@ package server
 
 import (
 	"context"
-	"encoding/json"
 	"english-battle/internal/config"
-	"english-battle/internal/db"
+	"english-battle/internal/database"
+	"english-battle/internal/server/handler"
 	"english-battle/internal/server/middleware"
-	"english-battle/internal/words"
 	"errors"
 	"fmt"
 	"log/slog"
 	"net"
 	"net/http"
-	"os"
-	"path/filepath"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type app struct {
-	cfg   *config.Config
-	words []db.Word
-}
-
-func (a *app) healthHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte("OK"))
-}
-
-func (a *app) webHandler(w http.ResponseWriter, r *http.Request) {
-	dist := filepath.Join(a.cfg.Root, "web/dist")
-	path := filepath.Clean(r.URL.Path)
-	filePath := filepath.Join(dist, path)
-
-	info, err := os.Stat(filePath)
-	if err == nil && !info.IsDir() {
-		http.ServeFile(w, r, filePath)
-		return
-	}
-
-	http.ServeFile(w, r, filepath.Join(dist, "index.html"))
-}
-
-func (a *app) wordsHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	random := words.GetRandom25(a.words)
-
-	err := json.NewEncoder(w).Encode(random)
-	if err != nil {
-		slog.Error("failed encode words", "err", err)
-		return
-	}
-}
-
-func Start(ctx context.Context, cfg *config.Config, words []db.Word) error {
-	app := &app{
-		cfg:   cfg,
-		words: words,
-	}
+func Start(ctx context.Context, cfg *config.Config, words []database.Word, pool *pgxpool.Pool) error {
+	queries := database.New(pool)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", app.webHandler)
-	mux.HandleFunc("/health", app.healthHandler)
-	mux.HandleFunc("/api/words", app.wordsHandler)
 
-	muxCORS := middleware.CORS(cfg, mux)
+	mux.HandleFunc("/", handler.Web(cfg))
+	mux.HandleFunc("/health", handler.Health)
+	mux.HandleFunc("/api/words", handler.RandomWords(words))
+	mux.HandleFunc("/api/login", handler.Login(cfg, queries))
+	mux.HandleFunc("/api/logout", handler.Logout(cfg))
+
+	authMiddleware := middleware.RequireAuth(cfg)
+	mux.Handle("/api/me", authMiddleware(handler.Me(queries)))
+
+	serverHandler := middleware.CORS(cfg, mux)
 
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.ServerPort),
-		Handler:      muxCORS,
+		Handler:      serverHandler,
 		ReadTimeout:  cfg.TimeoutRead,
 		WriteTimeout: cfg.TimeoutWrite,
 		IdleTimeout:  cfg.TimeoutIdle,
